@@ -130,7 +130,6 @@ public class AVLPhysicalDelete<E extends Comparable<E>> extends AbstractPhysical
         int lh = height(node.getLeftChild());
         int rh = height(node.getRightChild());
 
-
         int heightDifference = Math.abs(lh -rh);
 
         if (heightDifference == 1) {
@@ -148,17 +147,15 @@ public class AVLPhysicalDelete<E extends Comparable<E>> extends AbstractPhysical
                 } else {
                     next = tree.rightRotate(node);
                 }
-                // right rotate
-                deleteAdjustment((AVLTree.AVLTreeNode<E>) next.getParent());
             } else {
                 if (height(node.getRightChild().getRightChild()) < height(node.getRightChild().getLeftChild())) {
                     next = tree.rightLeftRotate(node);
                 } else {
                     next = tree.leftRotate(node);
                 }
-                // left rotate
-                deleteAdjustment((AVLTree.AVLTreeNode<E>) next.getParent());
             }
+
+            deleteAdjustment((AVLTree.AVLTreeNode<E>) next.getParent());
 
             lh = height(node.getLeftChild());
             rh = height(node.getRightChild());

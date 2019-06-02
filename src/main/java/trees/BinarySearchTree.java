@@ -4,9 +4,13 @@ import java.util.Iterator;
 
 public interface BinarySearchTree<E> extends SearchTree<E> {
 
-    void leftRotate(BinaryTreeNode<E> node);
+    BinaryTreeNode<E> leftRotate(BinaryTreeNode<E> node);
 
-    void rightRotate(BinaryTreeNode<E> node);
+    BinaryTreeNode<E> rightRotate(BinaryTreeNode<E> node);
+
+    BinaryTreeNode<E> leftRightRotate(BinaryTreeNode<E> node);
+
+    BinaryTreeNode<E> rightLeftRotate(BinaryTreeNode<E> node);
 
     /**
      * Returns an iterator over the elements by preorder traversal.

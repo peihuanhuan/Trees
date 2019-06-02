@@ -132,6 +132,11 @@ public interface Tree<E> {
         E getValue();
 
         /**
+         * set the value of node
+         */
+        void setValue(E value);
+
+        /**
          * returns the parent of the node
          * @return the parent of the node
          */

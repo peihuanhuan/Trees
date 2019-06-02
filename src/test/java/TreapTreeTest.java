@@ -1,10 +1,11 @@
 import org.junit.Assert;
 import org.junit.Test;
-import trees.CheckValidUtils;
 import trees.TreapTree;
 import trees.Tree;
 
 import java.util.Iterator;
+
+import static trees.TreeUtils.checkTreapTree;
 
 public class TreapTreeTest {
 
@@ -22,7 +23,6 @@ public class TreapTreeTest {
      * 后序
      */
 
-    private CheckValidUtils<Integer> checkValidUtils = new CheckValidUtils<>();
 
     public void insertTest(TreapTree<Integer> treapTree) {
         int count = (int) (Math.random()*100000);
@@ -40,7 +40,7 @@ public class TreapTreeTest {
 
         Assert.assertEquals(new Integer(min),treapTree.min());
         Assert.assertEquals(new Integer(max),treapTree.max());
-        Assert.assertTrue(checkValidUtils.checkTreapTree(treapTree));
+        checkTreapTree(treapTree);
         for (int i = 1; i<= count; i++) {
             Tree.Node<Integer> node = treapTree.search(i);
             Assert.assertNotNull(node);
@@ -153,11 +153,12 @@ public class TreapTreeTest {
         int size = count;
         for (int i = 1; i <= count; i+=2) {
             Assert.assertTrue(treapTree.delete(i));
+            checkTreapTree(treapTree);
             size--;
         }
         Assert.assertEquals(size,treapTree.size());
         Assert.assertEquals(count,treapTree.nodeCount());
-        Assert.assertTrue(checkValidUtils.checkTreapTree(treapTree));
+        checkTreapTree(treapTree);
 
     }
 
@@ -186,7 +187,7 @@ public class TreapTreeTest {
         }
         Assert.assertEquals(size,treapTree.size());
         Assert.assertEquals(count,treapTree.nodeCount());
-        Assert.assertTrue(checkValidUtils.checkTreapTree(treapTree));
+        checkTreapTree(treapTree);
     }
 
     private void MultiplePhysicalDeleteTest(TreapTree<Integer> treapTree) {
@@ -209,12 +210,13 @@ public class TreapTreeTest {
             Assert.assertTrue(treapTree.delete(i));
             Assert.assertTrue(treapTree.delete(i));
             Assert.assertFalse(treapTree.delete(i));
+            checkTreapTree(treapTree);
             size--;
             size--;
             size--;
             nodeCount--;
         }
-        Assert.assertTrue(checkValidUtils.checkTreapTree(treapTree));
+        checkTreapTree(treapTree);
         Assert.assertEquals(size,treapTree.size());
         Assert.assertEquals(nodeCount,treapTree.nodeCount());
     }
@@ -230,7 +232,7 @@ public class TreapTreeTest {
             Assert.assertTrue(treapTree.delete(i));
             size--;
         }
-        Assert.assertTrue(checkValidUtils.checkTreapTree(treapTree));
+        checkTreapTree(treapTree);
         Assert.assertEquals(size,treapTree.size());
         Assert.assertEquals(size,treapTree.nodeCount());
 
@@ -245,7 +247,7 @@ public class TreapTreeTest {
             Assert.assertTrue(treapTree.delete(i));
             size--;
         }
-        Assert.assertTrue(checkValidUtils.checkTreapTree(treapTree));
+        checkTreapTree(treapTree);
         Assert.assertEquals(size,treapTree.size());
         Assert.assertEquals(size,treapTree.nodeCount());
 

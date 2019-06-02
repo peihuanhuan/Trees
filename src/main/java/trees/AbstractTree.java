@@ -65,7 +65,7 @@ public abstract class AbstractTree<E> implements Tree<E> {
     }
 
     @Override
-    public final int depth() {
+    public int depth() {
         return depthCore(getRoot());
     }
 
@@ -73,12 +73,15 @@ public abstract class AbstractTree<E> implements Tree<E> {
         if (node == null) {
             return 0;
         }
-        int depth = 0;
+        int max = 0;
         Iterator<Node<E>> childrenIterator = node.getPreChildrenIterator();
-        if (childrenIterator.hasNext()) {
-            depth = Math.max(depthCore(childrenIterator.next()), depth) + 1;
+        while (childrenIterator.hasNext()) {
+            int depth = depthCore(childrenIterator.next());
+            if ( depth > max) {
+                max = depth;
+            }
         }
-        return depth;
+        return max + 1;
     }
 
 
@@ -192,10 +195,21 @@ public abstract class AbstractTree<E> implements Tree<E> {
         Node<E>[] children;
         int count = 1;
 
+        TreeNode() {
+        }
+
+        TreeNode(E value) {
+            this.value = value;
+        }
 
         @Override
         public E getValue() {
             return value;
+        }
+
+        @Override
+        public void setValue(E value) {
+            this.value = value;
         }
 
         @Override
@@ -243,7 +257,7 @@ public abstract class AbstractTree<E> implements Tree<E> {
 
             @Override
             public boolean hasNext() {
-                return children != null && count < children.length;
+                return count < children.length;
             }
 
             @Override
@@ -267,7 +281,7 @@ public abstract class AbstractTree<E> implements Tree<E> {
 
             @Override
             public boolean hasNext() {
-                return children != null && count >= 0;
+                return count >= 0;
             }
 
             @Override

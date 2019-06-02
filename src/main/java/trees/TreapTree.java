@@ -1,11 +1,27 @@
 package trees;
 
+import com.sun.istack.internal.NotNull;
 import trees.behavior.delete.LogicDelete;
 import trees.behavior.delete.TreapPhysicalDelete;
 
 public class TreapTree<E extends Comparable<E>> extends AbstractBinarySearchTree<E> {
 
     private TreapTreeNode<E> root;
+
+
+    public TreapTree() {
+        super();
+    }
+
+    public TreapTree(@NotNull DeleteType deleteType, @NotNull InsertType insertType) {
+        if (deleteType == DeleteType.LOGIC) {
+            deleteNodeBehavior = new LogicDelete<>();
+        } else {
+            deleteNodeBehavior = new TreapPhysicalDelete<>();
+        }
+        this.insertType = insertType;
+    }
+
 
 
     @Override
@@ -37,30 +53,14 @@ public class TreapTree<E extends Comparable<E>> extends AbstractBinarySearchTree
         return true;
     }
 
-    @Override
-    public boolean delete(E value) {
-        return deleteNodeBehavior.deleteNode(this,value);
-    }
 
 
-    public TreapTree() {
-        deleteNodeBehavior = new LogicDelete<>();
-        this.insertType = InsertType.SINGLE;
-    }
 
-    public TreapTree(DeleteType deleteType, InsertType insertType) {
-        if (deleteType == DeleteType.LOGIC) {
-            deleteNodeBehavior = new LogicDelete<>();
-        } else {
-            deleteNodeBehavior = new TreapPhysicalDelete<>();
-        }
-        this.insertType = insertType;
-    }
 
 
     //对插入的节点根据其fix进行修正
-    @Override
-    public void fixSubTree(Node<E> node) {
+    //    @Override
+    private void fixSubTree(Node<E> node) {
         if (node.getParent() == null) {
             return;
         }

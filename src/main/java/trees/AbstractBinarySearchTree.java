@@ -1,5 +1,7 @@
 package trees;
 
+import trees.behavior.delete.LogicDelete;
+
 import java.util.Iterator;
 import java.util.Stack;
 
@@ -7,29 +9,36 @@ public abstract class AbstractBinarySearchTree<E extends Comparable<E>>
         extends AbstractSearchTree<E> implements BinarySearchTree<E> {
 
 
+    AbstractBinarySearchTree() {
+        deleteNodeBehavior = new LogicDelete<>();
+        this.insertType = InsertType.SINGLE;
+    }
+
+    @Override
+    public boolean delete(E value) {
+        return deleteNodeBehavior.deleteNode(this,value);
+    }
+
+
     /**
      * left rotate for node a
      *
      *    root                             root
      *     /                               /
-     *    a                              c
-     *   /  \                          /   \
-     *  b    c                        a     ?
-     *     /   \                      / \
-     *    cl    ?                    b   cl
+     *    a                               c
+     *   /  \                           /   \
+     *  ?    c                         a     ?
+     *     /   \                     /  \
+     *    cl    ?                   ?   cl
      *
      *
      */
-
-
     @Override
-    public void leftRotate(BinaryTreeNode<E> node) {
-        if (node == null || node.getRightChild() == null) {
-            return;
+    public BinaryTreeNode<E> leftRotate(BinaryTreeNode<E> a) {
+        if (a == null || a.getRightChild() == null) {
+            return null;
         }
-        BinaryTreeNode<E> root = (BinaryTreeNode<E>) node.getParent();
-        BinaryTreeNode<E> a = node;
-        BinaryTreeNode<E> b = a.getLeftChild();
+        BinaryTreeNode<E> root = (BinaryTreeNode<E>) a.getParent();
         BinaryTreeNode<E> c = a.getRightChild();
         BinaryTreeNode<E> cl = c.getLeftChild();
 
@@ -49,7 +58,12 @@ public abstract class AbstractBinarySearchTree<E extends Comparable<E>>
             cl.setParent(a);
         }
         c.setLeftChild(a);
+
+        personalizedLeftRotate(a);
+
+        return c;
     }
+
 
     /**
      * right rotate for a
@@ -58,20 +72,18 @@ public abstract class AbstractBinarySearchTree<E extends Comparable<E>>
      *           /                                /
      *          a                                b
      *         /  \                             /  \
-     *        b    c                           ?    a
+     *        b    ?                           ?    a
      *       / \                                   / \
-     *      ?  br                                br   c
+     *      ?  br                                br   ?
      *
      */
     @Override
-    public void rightRotate(BinaryTreeNode<E> node) {
-        if (node == null || node.getLeftChild() == null) {
-            return;
+    public BinaryTreeNode<E> rightRotate(BinaryTreeNode<E> a) {
+        if (a == null || a.getLeftChild() == null) {
+            return null;
         }
-        BinaryTreeNode<E> root = (BinaryTreeNode<E>) node.getParent();
-        BinaryTreeNode<E> a = node;
+        BinaryTreeNode<E> root = (BinaryTreeNode<E>) a.getParent();
         BinaryTreeNode<E> b = a.getLeftChild();
-        BinaryTreeNode<E> c = a.getRightChild();
         BinaryTreeNode<E> br = b.getRightChild();
 
         if (root != null) {
@@ -90,6 +102,79 @@ public abstract class AbstractBinarySearchTree<E extends Comparable<E>>
             br.setParent(a);
         }
         b.setRightChild(a);
+
+        personalizedRightRotate(a);
+
+        return b;
+    }
+
+
+    /**
+     * left-right rotate for k3
+     *
+     *           root                         root                       root
+     *            /                            /                          /
+     *           k3                           k3                         k2
+     *         /    \                       /    \                     /    \
+     *        k1     ?       ===>          k2     ?     ===>         k1     k3
+     *       /  \                         /  |                      /  \   /  \
+     *      ?   k2                      k1    B                    ?   A  B    ?
+     *         /  \                    /  \
+     *        A   B                   ?    A
+     *
+     */
+    @Override
+    public final BinaryTreeNode<E> leftRightRotate(BinaryTreeNode<E> k3) {
+        BinaryTreeNode<E> k1 = k3.getLeftChild();
+        leftRotate(k1);
+        rightRotate(k3);
+        return (BinaryTreeNode<E>) k3.getParent();
+    }
+
+    /**
+     * right-left rotate for k1
+     *
+     *           root                         root                       root
+     *            /                            /                          /
+     *           k1                           k1                         k2
+     *         /    \                       /    \                     /    \
+     *        ?     k3       ===>          ?     k2       ===>        k1     k3
+     *            /   \                         /  \                 /  \   /  \
+     *          k2     ?                       A   k3               ?   A  B    ?
+     *         /  \                               /   \
+     *        A   B                              B    ?
+     *
+     */
+    @Override
+    public final BinaryTreeNode<E> rightLeftRotate(BinaryTreeNode<E> k1) {
+        BinaryTreeNode<E> k3 = k1.getRightChild();
+        rightRotate(k3);
+        leftRotate(k1);
+        return (BinaryTreeNode<E>) k1.getParent();
+    }
+
+    // some trees may need personalized operate after rotate, such as avl tree,rb tree.
+    // use it by override
+    public void personalizedLeftRotate(BinaryTreeNode<E> node) {
+        // empty;
+    }
+
+    // some trees may need personalized operate after rotate, such as avl tree,rb tree.
+    // use it by override
+    public void personalizedRightRotate(BinaryTreeNode<E> node) {
+        // empty;
+    }
+
+    @Override
+    public int depth() {
+        return depthCore((BinaryTreeNode) getRoot());
+    }
+
+    private int depthCore(BinaryTreeNode node) {
+        if (node == null) {
+            return 0;
+        }
+        return Math.max(depthCore(node.getLeftChild()),depthCore(node.getRightChild())) + 1;
     }
 
     /**
@@ -161,7 +246,7 @@ public abstract class AbstractBinarySearchTree<E extends Comparable<E>>
      * just insert the node by it's value, left child is smaller, right child is bigger
      * if don't need rotate, returns false
      */
-    @Override
+//    @Override
     public boolean insertValue(Node<E> node) {
         if (getRoot() == null) {
             setRoot(node);
@@ -299,7 +384,13 @@ public abstract class AbstractBinarySearchTree<E extends Comparable<E>>
 
 
         @SuppressWarnings("unchecked")
-        public SimpleBinaryTreeNode() {
+        SimpleBinaryTreeNode() {
+            this.children = new BinaryTreeNode[2];
+        }
+
+        @SuppressWarnings("unchecked")
+        public SimpleBinaryTreeNode(E value) {
+            super(value);
             this.children = new BinaryTreeNode[2];
         }
 

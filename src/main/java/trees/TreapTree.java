@@ -1,6 +1,5 @@
 package trees;
 
-import com.sun.istack.internal.NotNull;
 import trees.behavior.delete.LogicDelete;
 import trees.behavior.delete.TreapPhysicalDelete;
 
@@ -13,7 +12,7 @@ public class TreapTree<E extends Comparable<E>> extends AbstractBinarySearchTree
         super();
     }
 
-    public TreapTree(@NotNull DeleteType deleteType, @NotNull InsertType insertType) {
+    public TreapTree(DeleteType deleteType, InsertType insertType) {
         if (deleteType == DeleteType.LOGIC) {
             deleteNodeBehavior = new LogicDelete<>();
         } else {

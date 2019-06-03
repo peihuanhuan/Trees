@@ -1,0 +1,78 @@
+apply plugin: 'maven-publish'
+
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
+
+tasks.withType(Javadoc) {
+    options.encoding = "UTF-8"
+}
+
+task sourcesJar(type: Jar) {
+    //Gradle 4.0: 
+     classifier = 'sources'
+    //Gradle 5.0:
+//    archiveClassifier.set 'sources'
+    from sourceSets.main.allJava
+}
+
+task javadocJar(type: Jar) {
+    //Gradle 4.0: 
+     classifier = 'javadoc'
+    //Gradle 5.0:
+//    archiveClassifier.set 'javadoc'
+    from javadoc.destinationDir
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+//            versionMapping {
+//                usage('java-api') {
+//                    fromResolutionOf('runtimeClasspath')
+//                }
+//                usage('java-runtime') {
+//                    fromResolutionResult()
+//                }
+//            }
+
+            groupId project.group
+            afterEvaluate {
+                artifactId = jar.archiveBaseName
+            }
+            version project.version
+            pom {
+                name = project.name
+                description = project.description
+            }
+        }
+    }
+    repositories {
+        maven {
+            def releasesRepoUrl = "http://oss.singlar.org/repository/maven-releases/"
+            def snapshotsRepoUrl = "http://oss.singlar.org/repository/maven-snapshots/"
+            url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+            credentials {
+                Properties properties = new Properties()
+                properties.load(new FileReader("./local.properties"))
+                def nexusUsername = properties.getProperty("nexus.username")
+                def nexusPassword = properties.getProperty("nexus.password")
+                username nexusUsername
+                password nexusPassword
+            }
+        }
+    }
+}
+
+javadoc {
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
+}

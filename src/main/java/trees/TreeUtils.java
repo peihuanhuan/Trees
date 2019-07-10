@@ -16,6 +16,9 @@ public class TreeUtils {
         testAVL(avlTree);
     }
 
+    public static <E extends Comparable<E>> void checkSplayTree(SplayTree<E> splayTree) {
+        testBaseCheckVaild(splayTree);
+    }
 
 
     private static <E extends Comparable<E>> void testBaseCheckVaild(BinarySearchTree<E> tree) {

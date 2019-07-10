@@ -34,7 +34,7 @@ public abstract class AbstractBinarySearchTree<E extends Comparable<E>>
      *
      */
     @Override
-    public BinaryTreeNode<E> leftRotate(BinaryTreeNode<E> a) {
+    public final BinaryTreeNode<E> leftRotate(BinaryTreeNode<E> a) {
         if (a == null || a.getRightChild() == null) {
             return null;
         }
@@ -78,7 +78,7 @@ public abstract class AbstractBinarySearchTree<E extends Comparable<E>>
      *
      */
     @Override
-    public BinaryTreeNode<E> rightRotate(BinaryTreeNode<E> a) {
+    public final BinaryTreeNode<E> rightRotate(BinaryTreeNode<E> a) {
         if (a == null || a.getLeftChild() == null) {
             return null;
         }
@@ -166,7 +166,7 @@ public abstract class AbstractBinarySearchTree<E extends Comparable<E>>
     }
 
     @Override
-    public int depth() {
+    public final int depth() {
         return depthCore((BinaryTreeNode) getRoot());
     }
 
@@ -202,7 +202,7 @@ public abstract class AbstractBinarySearchTree<E extends Comparable<E>>
     }
 
     @Override
-    public E max() {
+    public final E max() {
         BinaryTreeNode<E> p = (BinaryTreeNode<E>) getRoot();
         if (p != null) {
             return maxCore(p).getValue();
@@ -222,7 +222,7 @@ public abstract class AbstractBinarySearchTree<E extends Comparable<E>>
     }
 
     @Override
-    public E min() {
+    public final E min() {
         BinaryTreeNode<E> p = (BinaryTreeNode<E>) getRoot();
         if (p != null) {
             return minCore(p).getValue();
@@ -299,29 +299,29 @@ public abstract class AbstractBinarySearchTree<E extends Comparable<E>>
     }
 
     @Override
-    public Iterator<Node<E>> getDFSIterator() {
+    public final Iterator<Node<E>> getDFSIterator() {
         throw new RuntimeException("不支持dfs ，请选择 其余遍历方式");
     }
 
     @Override
-    public Iterator<E> preOrderIterator() {
+    public final Iterator<E> preOrderIterator() {
         return new PreOrderIterator();
     }
 
     @Override
-    public Iterator<E> inOrderIterator() {
+    public final Iterator<E> inOrderIterator() {
         return new InOrderIterator();
     }
 
     @Override
-    public Iterator<E> postOrderIterator() {
+    public final Iterator<E> postOrderIterator() {
         return new PostOrderIterator();
     }
 
 
 
     @Override
-    public BinaryTreeNode<E> precursor(E value) {
+    public final BinaryTreeNode<E> precursor(E value) {
 
         Node<E> node = search(value);
         if (node == null) {
@@ -351,7 +351,7 @@ public abstract class AbstractBinarySearchTree<E extends Comparable<E>>
 
 
     @Override
-    public BinaryTreeNode<E> successor(E value) {
+    public final BinaryTreeNode<E> successor(E value) {
 
         Node<E> node = search(value);
         if (node == null) {
